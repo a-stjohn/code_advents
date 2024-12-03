@@ -1,21 +1,25 @@
 from time import time
-import numpy as np
+from collections import Counter
 
 
-def main() -> int:
+def get_puzzle_input() -> tuple[list[int], list[int]]:
     with open("puzzle_input.txt") as fin:
-        left_array = []
-        right_array = []
+        input_array1 = []
+        input_array2 = []
         for line in fin:
             left, right = line.split()
-            left_array.append(int(left))
-            right_array.append(int(right))
+            input_array1.append(int(left))
+            input_array2.append(int(right))
 
-    left_array.sort()
-    right_array.sort()
+    input_array1.sort()
+    input_array2.sort()
 
+    return input_array1, input_array2
+
+
+def main_part1(input_array1: list[int], input_array2: list[int]) -> int:
     differences = []
-    for left, right in zip(left_array, right_array):
+    for left, right in zip(input_array1, input_array2):
         differences.append(abs(left - right))
 
     answer = sum(differences)
@@ -23,21 +27,37 @@ def main() -> int:
     return answer
 
 
-def use_numpy() -> int:
-    with open("puzzle_input.txt") as fin:
-        arrays = []
-        for line in fin:
-            arrays.append(np.array(object=line.split(), dtype=np.int32))
+def main_part2(input_array1: list[int], input_array2: list[int]) -> int:
+    unique_array1 = set(input_array1)
+    element_scores = []
+    for unique_element in unique_array1:
+        matches = 0
+        for element in input_array2:
+            if unique_element == element:
+                matches += 1
+        element_scores.append(unique_element * matches)
 
-        input_matrix = np.stack(arrays)
-        input_matrix.sort(axis=0)
-        print(input_matrix[])
+    answer = sum(element_scores)
+
+    return answer
+
+def main_part2_gpt(input_array1, input_array2):
+    right_count = Counter(input_array1)
+
+    # Calculate the similarity score
+    score = sum(x * right_count.get(x, 0) for x in input_array2)
+
+    return score
 
 
 if __name__ == '__main__':
-    # start = time()
-    # main()
-    # print(f"Time to run: {time() - start}")
-    # print(f"The answer is {main()}")
+    left_array, right_array = get_puzzle_input()
+    start_base1 = time()
+    answer1 = main_part1(left_array, right_array)
+    print(f"Time to run base1: {time() - start_base1:0.10f}")
+    print(f"The answer to part 1 is {answer1}")
 
-    use_numpy()
+    start_base2 = time()
+    answer2 = main_part2_gpt(left_array, right_array)
+    print(f"Time to run base2: {time() - start_base2:0.10f}")
+    print(f"The answer to part 2 is {answer2}")
