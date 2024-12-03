@@ -41,6 +41,7 @@ def main_part2(input_array1: list[int], input_array2: list[int]) -> int:
 
     return answer
 
+
 def main_part2_gpt(input_array1, input_array2):
     right_count = Counter(input_array1)
 
