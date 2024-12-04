@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="code_advent" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="code_advent" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.12 (code_advents)" project-jdk-type="Python SDK" />
 </project>
