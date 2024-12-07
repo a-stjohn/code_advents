@@ -1,51 +1,47 @@
-def get_puzzle_input():
-    puzzle_matrix = []
-    with open("puzzle_input.txt") as fin:
-        for line in fin:
-            puzzle_matrix.append(line.split("\n")[0])
-
-    return puzzle_matrix
+def read_grid(input_str):
+    """Convert input string to 2D grid of characters."""
+    return [list(row.strip()) for row in input_str.strip().split('\n')]
 
 
-def count_word_in_grid(grid, word="XMAS"):
-    rows = len(grid)
-    cols = len(grid[0])
-    word_len = len(word)
-    count = 0
-
-    # Function to check if the word can be found starting from (r, c) in a given direction
-    def check_word(r, c, direction):
-        dr, dc = direction
-        for i in range(word_len):
-            nr, nc = r + i * dr, c + i * dc
-            # Check if the new position is out of bounds or does not match the corresponding character in the word
-            if nr < 0 or nr >= rows or nc < 0 or nc >= cols or grid[nr][nc] != word[i]:
-                return False
-        return True
-
-    # Traverse each cell in the grid
-    for r in range(rows):
-        for c in range(cols):
-            # If the current cell matches the first letter of the word, check in all directions
-            if grid[r][c] == word[0]:
-                for direction in DIRECTIONS:
-                    if check_word(r, c, direction):
-                        count += 1
-
-    return count
-
-if __name__ == '__main__':
-    DIRECTIONS = [
-        (0, 1),  # right
-        (0, -1),  # left
-        (1, 0),  # down
-        (-1, 0),  # up
-        (1, 1),  # down-right (diagonal)
-        (-1, -1),  # up-left (diagonal)
-        (1, -1),  # down-left (diagonal)
-        (-1, 1)  # up-right (diagonal)
+def find_xmas_occurrences(grid):
+    """Find all XMAS occurrences in all possible directions."""
+    rows, cols = len(grid), len(grid[0])
+    directions = [
+        (0, 1), (1, 0), (1, 1), (1, -1)
     ]
 
-    word_search = get_puzzle_input()
-    answer = count_word_in_grid(word_search)
+    reverse_directions = [(dx * -1, dy * -1) for (dx, dy) in directions]
+    all_directions = directions + reverse_directions
+    print(f"All possible directions: {all_directions}")
+
+    xmas_count = 0
+
+    for r in range(rows):
+        for c in range(cols):
+            for (dx, dy) in all_directions:
+                if 0 <= r + dx * 3 < rows and 0 <= c + dy * 3 < cols:
+                    if (grid[r][c] == 'X' and
+                            grid[r + dx][c + dy] == 'M' and
+                            grid[r + dx * 2][c + dy * 2] == 'A' and
+                            grid[r + dx * 3][c + dy * 3] == 'S'):
+                        xmas_count += 1
+
+    return xmas_count
+
+
+def solve_word_search(input_grid):
+    """Solve both parts of the word search puzzle."""
+    grid = read_grid(input_grid)
+    part1_result = find_xmas_occurrences(grid)
+    # part2_result = find_x_mas_occurrences(grid)
+
+    # return part1_result, part2_result
+    return part1_result
+
+
+if __name__ == '__main__':
+    with open("puzzle_input.txt") as fin:
+        word_search_text = fin.read()
+
+    answer = solve_word_search(word_search_text)
     print(answer)
